@@ -36,10 +36,10 @@ Pruning Filters for Efficient ConvNets
 ![image](https://user-images.githubusercontent.com/80331072/112116453-453ff580-8bf5-11eb-9d1c-4d929aca1d47.png)
 
 ### 代码分析
-文件包含五个py文件：main.py; vgg.py ;train.py ;parameter.py ;hardprune.py
-1.main.py调用train_network()函数，获得训练模型，保存在args.save_path路径中
-2.在args.load_path路径下加载训练模型，在给定的通道中剪枝相应数量的通道
-其核心代码为：
+文件包含五个py文件：main.py; vgg.py ;train.py ;parameter.py ;hardprune.py  
+1.main.py调用train_network()函数，获得训练模型，保存在args.save_path路径中  
+2.在args.load_path路径下加载训练模型，在给定的通道中剪枝相应数量的通道  
+其核心代码为：  
 ```
 def get_channel_index(kernel, num_elimination, residue=None):#获取要剪枝通道的索引
     # get cadidate channel index for pruning
@@ -69,9 +69,9 @@ def index_remove(tensor, dim, index, removed=False):#更新张量（更新卷积
 
     return new_tensor
 ```
-首先通过get_channel_index()函数获取要剪枝的通道，在每个层的更新函数（get_new_conv()、get_new_norm()和get_new_linear()）中调用index_remove()函数去更新对应的权值和偏置,进而更新要剪枝的层。
+首先通过get_channel_index()函数获取要剪枝的通道，在每个层的更新函数（get_new_conv()、get_new_norm()和get_new_linear()）中调用index_remove()函数去更新对应的权值和偏置,进而更新要剪枝的层。  
 
-###代码运行
+### 代码运行
 #### Training
 ```
 python main.py --train-flag --save-path ./trained_models/vgg.pth --epoch 300 --lr 0.1 --lr-milestone 100 200
