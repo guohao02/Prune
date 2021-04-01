@@ -39,7 +39,8 @@ __Pruning Filters for Efficient ConvNets__
 文件包含五个py文件：main.py; vgg.py ;train.py ;parameter.py ;hardprune.py  
 1.main.py调用train_network()函数，获得训练模型，保存在args.save_path路径中  
 2.在args.load_path路径下加载训练模型，在给定的通道中剪枝相应数量的通道  
-**其核心代码为：  **
+
+__其核心代码为：  
 ```
 def get_channel_index(kernel, num_elimination, residue=None):#获取要剪枝通道的索引
     # get cadidate channel index for pruning
