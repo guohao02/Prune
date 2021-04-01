@@ -85,7 +85,7 @@ python main.py --hard-prune-flag --load-path ./trained_models/vgg.pth --save-pat
 ```
 python main.py --train-flag --load-path ./prunned_models/vgg.pth --save-path ./trained_prunned_models/vgg.pth --epoch 20 --lr 0.001
 ```
-### 代码运行结果
+### 代码运行结果(VGG)
 1.剪枝前的训练结果：  
 Top1：93.7400     Top5：99.6300      Loss：0.3262  
 2.剪枝后的训练结果：  
@@ -98,6 +98,7 @@ Conv10：512 → 256
 Conv11：512 → 256  
 Conv12：512 → 256  
 Conv13：512 → 256  
+
 
 
 
