@@ -6,7 +6,7 @@
 ### 算法的流程
 **流程图**  
 ![image](https://user-images.githubusercontent.com/80331072/113682117-5c9ed880-96f5-11eb-9657-8d9549003c10.png)  
-在上图中对第k次epoch进行剪枝，检测根据是$L_{P}-norm$进行度量，代码中采用的的是L1，剪除权重较小的filters（置0）。在下个epoch中进行迭代。 
+在上图中对第k次epoch进行剪枝，检测根据是$L_{P}-norm$进行度量，代码中采用的的是L2，剪除权重较小的filters（置0）。在下个epoch中进行迭代。 
 
 **$L_{2}-norm$公式：**  
 ![image](https://user-images.githubusercontent.com/80331072/113713905-70a90100-971a-11eb-9bff-0cc8344c2b31.png)
