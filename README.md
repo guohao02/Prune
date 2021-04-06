@@ -4,3 +4,6 @@
 代码文件夹：Network-Slimming
 2. [PRUNING FILTERS FOR EFFICIENT CONVNETS](https://arxiv.org/pdf/1608.08710.pdf)  
 代码文件夹：Pruning-Filters
+3.[Soft Filter Pruning for Accelerating Deep Convolutional Neural Networks](https://arxiv.org/pdf/1808.06866.pdf),)  
+代码文件夹：soft-filter-pruning
+
