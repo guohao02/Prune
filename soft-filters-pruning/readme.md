@@ -4,10 +4,10 @@
 
 ## SFP算法
 ### 算法的流程
-**流程图  
+流程图  
 ![image](https://user-images.githubusercontent.com/80331072/113682117-5c9ed880-96f5-11eb-9657-8d9549003c10.png)  
 在上图中对第k次epoch进行剪枝，检测根据是$L_{P}-norm$进行度量，代码中采用的的是L1，剪除权重较小的filters（置0）。在下个epoch中进行迭代。  
-**$L_{2}-norm$公式：  
+$L_{2}-norm$公式：  
 ![image](https://user-images.githubusercontent.com/80331072/113713221-a4375b80-9719-11eb-8850-f0f361b801c2.png)
 
 ### 算法的具体步骤  
