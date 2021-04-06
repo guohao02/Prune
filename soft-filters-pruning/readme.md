@@ -22,7 +22,7 @@
 
 ## 核心代码
 ```
-    def get_codebook(self, weight_torch,compress_rate,length):#剪枝
+    def get_codebook(self, weight_torch,compress_rate,length):
         weight_vec = weight_torch.view(length)
         weight_np = weight_vec.cpu().numpy()
     
@@ -46,8 +46,7 @@
             norm2 = torch.norm(weight_vec,2,1)#按行求2范数
             norm2_np = norm2.cpu().numpy()#转换成np
             filter_index = norm2_np.argsort()[:filter_pruned_num]#numpy.argsort()返回的是数组值从小到大的索引值
-#            norm1_sort = np.sort(norm1_np)
-#            threshold = norm1_sort[int (weight_torch.size()[0] * (1-compress_rate) )]
+
             kernel_length = weight_torch.size()[1] *weight_torch.size()[2] *weight_torch.size()[3]#卷积核的大小
             for x in range(0,len(filter_index)):
                 codebook [filter_index[x] *kernel_length : (filter_index[x]+1) *kernel_length] = 0#置零
