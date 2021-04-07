@@ -62,6 +62,7 @@
 ```
 
 ## 代码运行
+soft-pruning.py是剪枝文件，里面包含Mask类，可以在main.py中调用。main.py中包含数据集和训练集下载、train模块、test模块、最优模型数据保存模块
 ```
 python main.py
 ```
