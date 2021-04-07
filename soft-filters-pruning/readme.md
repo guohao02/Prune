@@ -6,9 +6,9 @@
 ### 算法的流程
 **流程图**  
 ![image](https://user-images.githubusercontent.com/80331072/113682117-5c9ed880-96f5-11eb-9657-8d9549003c10.png)  
-在上图中对第k次epoch进行剪枝，检测根据是$L_{P}-norm$进行度量，代码中采用的的是L2，剪除权重较小的filters（置0）。在下个epoch中进行迭代。 
+在上图中对第k次epoch进行剪枝，检测根据是L-norm进行度量，代码中采用的的是L2，剪除权重较小的filters（置0）。在下个epoch中进行迭代。 
 
-**$L_{2}-norm$公式：**  
+**L2-norm公式：**  
 ![image](https://user-images.githubusercontent.com/80331072/113713905-70a90100-971a-11eb-9bff-0cc8344c2b31.png)
 
 ### 算法的具体步骤  
@@ -17,7 +17,7 @@
 (1)初始化模型权重  
 (2)每个epoch更新模型权重  
 &nbsp; <1>将每个卷积核的权重的绝对值相加，从小到大排序  
-&nbsp; <2>剪除前$N_{i+1}P_{i}$个卷积核(置0)  
+&nbsp; <2>剪除前NP个卷积核(置0)  
 &nbsp; <3>返回到(2)，继续训练  
 (3)获取最优的模型参数，并返回模型  
 
@@ -26,14 +26,14 @@
 
 ## 核心代码
 ```
-    def get_codebook(self, weight_torch,compress_rate,length):
+    def get_codebook(self, weight_torch,compress_rate,length):#获取掩码
         weight_vec = weight_torch.view(length)
         weight_np = weight_vec.cpu().numpy()
     
-        weight_abs = np.abs(weight_np)
-        weight_sort = np.sort(weight_abs)
+        weight_abs = np.abs(weight_np)#获取权值的绝对值
+        weight_sort = np.sort(weight_abs)#排序
         
-        threshold = weight_sort[int (length * (1-compress_rate) )]
+        threshold = weight_sort[int (length * (1-compress_rate) )]#阈值
         #pruning：绝对值大于阈值置1，小于阈值置0
         weight_np [weight_np <= -threshold  ] = 1
         weight_np [weight_np >= threshold  ] = 1
