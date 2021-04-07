@@ -62,7 +62,8 @@
 ```
 
 ## 代码运行
-soft-pruning.py是剪枝文件，里面包含Mask类，可以在main.py中调用。main.py中包含数据集和训练集下载、train模块、test模块、最优模型数据保存模块等。代码中采用的模型是resnet20(models文件夹里面也有其他类型的网络模型供选择),采用的数据集为
+soft-pruning.py是剪枝文件，里面包含Mask类，可以在main.py中调用。main.py中包含数据集和训练集下载、train模块、test模块、最优模型数据保存模块等。代码中采用的模型是resnet20(models文件夹里面也有其他类型的网络模型供选择),采用的数据集为cifar10，首先初始化模型参数，进行剪枝和评估；再进入主循环中，先训练模型，再进行模型剪枝，直到完成所有的epoch。
+
 ```
 python main.py
 ```
