@@ -1,6 +1,6 @@
 # taylor - pruning
 ## 下面介绍的论文为：  
-[Pruning Convolutional Neural Networks for Resource Efficient Inference](https://arxiv.org/abs/1611.06440) 
+[Pruning Convolutional Neural Networks for Resource Efficient Inference](https://arxiv.org/abs/1611.06440)   
 这篇论文来自NVIDIA，论文中提出了一种用于修剪神经网络中的卷积核的新公式，以实现有效的推理。  
 论文中提出了一个基于泰勒展开的新准则，用它去近似由于修剪网络参数引起的损失函数的变化。  
 ## 主要思想
