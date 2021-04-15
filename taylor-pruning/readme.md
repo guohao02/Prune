@@ -92,7 +92,7 @@ prune:
 ```
 python finetune.py --prune
 ```
-
+数据集：Dogs vs. Cats
 
 
 
