@@ -15,7 +15,7 @@
 ![image](https://user-images.githubusercontent.com/80331072/114808889-bd0bd500-9ddb-11eb-8689-b9f575fd5602.png)
 Taylor 展开：
 修剪前后的损失变化用下面这个公式表示，hi=0代表的是修剪之后的损失。  
-![image](https://user-images.githubusercontent.com/80331072/114809170-458a7580-9ddc-11eb-9062-79f99f520a35.png)
+![image](https://user-images.githubusercontent.com/80331072/114809170-458a7580-9ddc-11eb-9062-79f99f520a35.png)  
 使用1阶泰勒展开去逼近∆C(hi)，去掉高阶项，最后得到：  
 ![image](https://user-images.githubusercontent.com/80331072/114809276-710d6000-9ddc-11eb-98ff-be7fac126726.png)
 
