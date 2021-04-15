@@ -9,3 +9,6 @@
 3.[Soft Filter Pruning for Accelerating Deep Convolutional Neural Networks](https://arxiv.org/pdf/1808.06866.pdf),)  
 代码文件夹：soft-filter-pruning
 
+4.[Pruning Convolutional Neural Networks for Resource Efficient Inference](https://arxiv.org/abs/1611.06440)
+代码文件夹：taylor-pruning
+
