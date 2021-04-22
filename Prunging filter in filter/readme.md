@@ -96,4 +96,6 @@ FS是为了学习滤波器除了权重之外的另一个重要特性:形状，�
 mkdir -p checkpoint/VGG/sr0.00001_threshold_0.01
 python main.py --arch VGG --data_path ../data --sr 0.00001 --threshold 0.01 --save checkpoint/VGG/sr0.00001_threshold_0.01
 ```
+## 代码参考
+[fxmeng/Pruning-Filter-in-Filter](https://github.com/fxmeng/Pruning-Filter-in-Filter)
 
