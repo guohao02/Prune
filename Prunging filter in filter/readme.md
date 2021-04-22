@@ -27,4 +27,73 @@ FS是为了学习滤波器除了权重之外的另一个重要特性:形状，�
 (3) 通过变换普通卷积为Stripe-Wise Convolution，结构化的实现逐条剪枝后的模型。
 
 ## 核心代码
+```
+# flops.py
+    def filter_strip_hook(self, input, output):重构了stripe-wise-convolutional的flops计算方法
+# vgg.py（resnet56也类似）
+    def __init__(self, num_classes=10, cfg=None):
+        ...
+        self.classifier = Linear(512, num_classes)# 将线性层换成一键裁剪的线性层
+    def _make_layers(self, cfg):
+        ...
+        layers += [FilterStripe(in_channels, x),# 将卷积层换成一键转换逐条卷积的卷积层
+                   BatchNorm(x),---将BN层换成一键裁剪的BN层
+                   nn.ReLU(inplace=True)]
+        ...
+    def update_skeleton(self, sr, threshold):# 训练过程中更新模型的形状（置0方式）
+
+    def prune(self, threshold):# 训练完成后真正实现逐条裁剪
+# stripe.py
+    class FilterStripe(nn.Conv2d):
+        def __init__(self, in_channels, out_channels, kernel_size=3, stride=1):
+            super(FilterStripe, self).__init__(in_channels, out_channels, kernel_size, stride, kernel_size // 2, groups=1, bias=False)
+            self.BrokenTarget = None# 状态标志，训练时为None，训练完裁剪后为裁剪的情况
+            self.FilterSkeleton = Parameter(torch.ones(self.out_channels, self.kernel_size[0], self.kernel_size[1]), requires_grad=True)# 滤波器骨架
+    
+        def forward(self, x):
+            if self.BrokenTarget is not None:# 逐条裁剪后结构化实现方式
+                out = torch.zeros(x.shape[0], self.FilterSkeleton.shape[0], int(np.ceil(x.shape[2] / self.stride[0])), int(np.ceil(x.shape[3] / self.stride[1])))
+                if x.is_cuda:
+                    out = out.cuda()
+                x = F.conv2d(x, self.weight)# 首先将所有条和feature map相乘。
+                l, h = 0, 0
+                for i in range(self.BrokenTarget.shape[0]):
+                    for j in range(self.BrokenTarget.shape[1]):
+                        h += self.FilterSkeleton[:, i, j].sum().item()
+                        out[:, self.FilterSkeleton[:, i, j]] += self.shift(x[:, l:h], i, j)[:, :, ::self.stride[0], ::self.stride[1]]# 然后按照相应位置shift后相加。
+                        l += self.FilterSkeleton[:, i, j].sum().item()
+                return out
+            else:
+                return F.conv2d(x, self.weight * self.FilterSkeleton.unsqueeze(1), stride=self.stride, padding=self.padding, groups=self.groups)# 正常训练时将参数与骨架乘在一起，通过置0屏蔽无效stripes。
+    
+        def prune_in(self, in_mask=None):# 裁剪输入通道
+        
+        def prune_out(self, threshold):# 裁剪输出通道
+    
+        def _break(self, threshold):# 将正常卷积转换为逐条剪枝的参数移植
+            self.weight = Parameter(self.weight * self.FilterSkeleton.unsqueeze(1))
+            self.FilterSkeleton = Parameter((self.FilterSkeleton.abs() > threshold), requires_grad=False)
+            if self.FilterSkeleton.sum() == 0:
+                self.FilterSkeleton.data[0][0][0] = True
+            self.out_channels = self.FilterSkeleton.sum().item()
+            self.BrokenTarget = self.FilterSkeleton.sum(dim=0)
+            self.kernel_size = (1, 1)
+            self.weight = Parameter(self.weight.permute(2, 3, 0, 1).reshape(-1, self.in_channels, 1, 1)[self.FilterSkeleton.permute(1, 2, 0).reshape(-1)])
+    
+        def update_skeleton(self, sr, threshold):# 训练时更新滤波器骨架
+            self.FilterSkeleton.grad.data.add_(sr * torch.sign(self.FilterSkeleton.data))# l1 norm惩罚
+            mask = self.FilterSkeleton.data.abs() > threshold # 屏蔽掉小于阈值的stripes
+            self.FilterSkeleton.data.mul_(mask)
+            self.FilterSkeleton.grad.data.mul_(mask)
+            out_mask = mask.sum(dim=(1, 2)) != 0
+            return out_mask
+    
+        def shift(self, x, i, j):# 3*3卷积上每个点扫描到的特征图是不同的，不同位置需要对应平移才能相加
+            return F.pad(x, (self.BrokenTarget.shape[0] // 2 - j, j - self.BrokenTarget.shape[0] // 2, self.BrokenTarget.shape[0] // 2 - i, i - self.BrokenTarget.shape[1] // 2), 'constant', 0)
+```
+## 代码运行
+```
+mkdir -p checkpoint/VGG/sr0.00001_threshold_0.01
+python main.py --arch VGG --data_path ../data --sr 0.00001 --threshold 0.01 --save checkpoint/VGG/sr0.00001_threshold_0.01
+```
 
