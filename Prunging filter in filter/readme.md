@@ -44,7 +44,7 @@ FS是为了学习滤波器除了权重之外的另一个重要特性:形状，�
 
     def prune(self, threshold):# 训练完成后真正实现逐条裁剪
 # stripe.py
-    class FilterStripe(nn.Conv2d):
+    class FilterStripe(nn.Conv2d):#卷积+FS层
         def __init__(self, in_channels, out_channels, kernel_size=3, stride=1):
             super(FilterStripe, self).__init__(in_channels, out_channels, kernel_size, stride, kernel_size // 2, groups=1, bias=False)
             self.BrokenTarget = None# 状态标志，训练时为None，训练完裁剪后为裁剪的情况
