@@ -12,6 +12,6 @@
 4.[Pruning Convolutional Neural Networks for Resource Efficient Inference](https://arxiv.org/abs/1611.06440)  
 代码文件夹：taylor-pruning
 
-5.[Prunging filter in filter](https://arxiv.org/pdf/2009.14410.pdf)
+5.[Prunging filter in filter](https://arxiv.org/pdf/2009.14410.pdf)  
 代码文件夹：Prunging-filter-in-filter
 
