@@ -13,5 +13,7 @@
 代码文件夹：taylor-pruning
 
 5.[Prunging filter in filter](https://arxiv.org/pdf/2009.14410.pdf)  
-代码文件夹：Prunging-filter-in-filter
+代码文件夹：Prunging-filter-in-filter  
 
+6.[Neuron-level Structured Pruning using Polarization Regularizer](https://www.researchgate.net/profile/Tao-Zhuang-4/publication/344781579_Neuron-level_Structured_Pruning_using_Polarization_Regularizer/links/5f9bf48c299bf1b53e514c0c/Neuron-level-Structured-Pruning-using-Polarization-Regularizer.pdf)  
+代码文件夹：PolarizationPruning  
