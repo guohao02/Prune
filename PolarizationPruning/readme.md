@@ -25,5 +25,79 @@
 通过极化正则化，将BN层的缩放因子推向两极化，由此可以更加准确的获得剪枝的阈值，只剪去那些不重要的通道。
 
 ## 核心代码
+BN层稀疏化函数：
 ```
+def bn_sparsity(model, loss_type, sparsity, t, alpha,
+                flops_weighted: bool, weight_min=None, weight_max=None):#BN层稀疏化，缩放因子被推向两极
+    """
 
+    :type model: torch.nn.Module
+    :type alpha: float
+    :type t: float
+    :type sparsity: float
+    :type loss_type: LossType
+    """
+    bn_modules = model.get_sparse_layers()
+
+    if loss_type == LossType.POLARIZATION or loss_type == LossType.L2_POLARIZATION:
+        # compute global mean of all sparse vectors
+        n_ = sum(map(lambda m: m.weight.data.shape[0], bn_modules))#map() 会根据提供的函数对指定序列做映射
+        sparse_weights_mean = torch.sum(torch.stack(list(map(lambda m: torch.sum(m.weight), bn_modules)))) / n_#获取Bn层权值的均值
+
+        sparsity_loss = 0.
+        if flops_weighted:
+            for sub_module in model.modules():
+                if isinstance(sub_module, model.building_block):
+                    flops_weight = sub_module.get_conv_flops_weight(update=True, scaling=True)
+                    sub_module_sparse_layers = sub_module.get_sparse_modules()
+
+                    for sparse_m, flops_w in zip(sub_module_sparse_layers, flops_weight):
+                        # linear rescale the weight from [0, 1] to [lambda_min, lambda_max]，将权重从[0，1]线性重缩放到[lambda_min，lambda_max]
+                        flops_w = weight_min + (weight_max - weight_min) * flops_w
+
+                        sparsity_term = t * torch.sum(torch.abs(sparse_m.weight.view(-1))) - torch.sum(
+                            torch.abs(sparse_m.weight.view(-1) - alpha * sparse_weights_mean))
+                        sparsity_loss += flops_w * sparsity * sparsity_term
+            return sparsity_loss
+        else:
+            for m in bn_modules:
+                if loss_type == LossType.POLARIZATION:
+                    sparsity_term = t * torch.sum(torch.abs(m.weight)) - torch.sum(
+                        torch.abs(m.weight - alpha * sparse_weights_mean))
+                elif loss_type == LossType.L2_POLARIZATION:
+                    sparsity_term = t * torch.sum(torch.abs(m.weight)) - torch.sum(
+                        (m.weight - alpha * sparse_weights_mean) ** 2)
+                else:
+                    raise ValueError(f"Unexpected loss type: {loss_type}")
+                sparsity_loss += sparsity * sparsity_term
+
+            return sparsity_loss
+    else:
+        raise ValueError()
+```
+剪枝函数：
+```
+def prune_model(self, pruner: Callable[[np.ndarray], float], prune_mode: str) -> None:
+def do_pruning(self, in_channel_mask: np.ndarray, pruner: Callable[[np.ndarray], float], prune_mode: str):
+def prune_conv_layer()
+```
+获取阈值函数：
+```
+def search_threshold(weight: np.ndarray, alg: str):
+    if alg not in ["fixed", "grad", "search"]:
+        raise NotImplementedError()
+
+    hist_y, hist_x = np.histogram(weight, bins=100, range=(0, 1))
+    if alg == "search":
+        raise ValueError(f"Deprecated pruning algorithm: {alg}")
+    elif alg == "grad":
+        hist_y_diff = np.diff(hist_y)
+        for i in range(len(hist_y_diff) - 1):
+            if hist_y_diff[i] <= 0 <= hist_y_diff[i + 1]:
+                threshold = hist_x[i + 1]
+                if threshold > 0.2:
+                    print(f"WARNING: threshold might be too large: {threshold}")
+                return threshold
+    elif alg == "fixed":
+        return hist_x[1]
+```
