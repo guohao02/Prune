@@ -101,3 +101,23 @@ def search_threshold(weight: np.ndarray, alg: str):
     elif alg == "fixed":
         return hist_x[1]
 ```
+## 代码运行(train on CIFAR-10)
+1.Create checkpoint directory
+```
+mkdir ./checkpoints/  # checkpoints and tensorboard events
+mkdir ./events/       # TensorBoard events
+```
+2.Sparsity Train
+```
+python main.py
+```
+3.Pruning
+```
+python vggprune_gate.py
+````
+4.Fine-tuning
+```
+python -u main_finetune.py --dataset cifar10 --epochs 200 --lr 5e-4 --gammas 0.5 0.4 --decay-epoch 60 150 --arch vgg16_linear --refine ./checkpoints/pruned_grad.pth.tar --bn-wd --test-batch-size 128 --weight-decay 5e-4 --save ./checkpoints/ --log ./events/
+```
+## 代码参考
+[PolarizationPruning](https://github.com/polarizationpruning/PolarizationPruning/tree/master/cifar)
