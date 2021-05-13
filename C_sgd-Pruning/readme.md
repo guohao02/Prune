@@ -19,12 +19,19 @@
 ![image](https://user-images.githubusercontent.com/80331072/118098355-5ee80700-b406-11eb-9189-f851ef3d9c68.png)
 
 &emsp;&emsp;其中L是原始目标函数，τ是学习率，η是模型的原始权重衰减系数，∈是引入的唯一的超参数，叫做向心力  
-公式原理：对于在同一簇的卷积核，由目标函数得到的增量（第一项）被平均，第二项是普通的权重衰减，初始值的差异逐渐消除（最后一项），所以卷积核逐渐向它们在超空间的中心靠近。  
+&emsp;&emsp;公式原理：对于在同一簇的卷积核，由目标函数得到的增量（第一项）被平均，第二项是普通的权重衰减，初始值的差异逐渐消除（最后一项），所以卷积核逐渐向它们在超空间的中心靠近。  
 &emsp;&emsp;假设L是层的索引集，我们使用平方核偏差χ来度量簇内相似度，也就是簇内的卷积核有多相似
 ![image](https://user-images.githubusercontent.com/80331072/118098608-b1292800-b406-11eb-983f-e0eb43619a51.png)  
 
 **有效实施**  
 ![image](https://user-images.githubusercontent.com/80331072/118099550-f863e880-b407-11eb-8172-d2b9f3119d88.png)
+
+**C-SGD后的卷积核修剪**
+&emsp;&emsp;C-SGD训练完成后，由于每一簇的卷积核变得相同，所以挑选任何一个都是一样的。为每一层从剩下的集里简单地挑选每一簇中第一个卷积核（也就是有最小索引值的卷积核），就是
+![image](https://user-images.githubusercontent.com/80331072/118102031-d9b32100-b40a-11eb-9fff-469fb33342ae.png)
+&emsp;&emsp;对于下一层，我们把要删除的通道加到对应剩下的通道上。
+![image](https://user-images.githubusercontent.com/80331072/118102107-f2233b80-b40a-11eb-8919-9e0ac9ab50d3.png)
+
 
 
 
