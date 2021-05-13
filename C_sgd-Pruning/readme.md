@@ -2,7 +2,7 @@
 ## 下面要介绍的论文为：
 [Centripetal SGD for Pruning Very Deep Convolutional Networks withComplicated Structure](https://openaccess.thecvf.com/content_CVPR_2019/papers/Ding_Centripetal_SGD_for_Pruning_Very_Deep_Convolutional_Networks_With_Complicated_CVPR_2019_paper.pdf)(CVPR2020)
 ## 介绍
-    本文提出了一种创新的优化方法——Centripetal SGD(C-SGD)。顾名思义，我们将多个卷积核移动到卷积核参数的超空间的中心。同时，根据模型的原始目标函数，
+&emsp;本文提出了一种创新的优化方法——Centripetal SGD(C-SGD)。顾名思义，我们将多个卷积核移动到卷积核参数的超空间的中心。同时，根据模型的原始目标函数，
 尽可能地保持模型的性能。通过C-SGD方法训练一些卷积核使其变得相同，从而在CNNs中产生冗余模式。与基于重要性的卷积核剪枝方法相比，这样做不需要对卷积核的重
 要性有启发性的认识。与置零法相比，该方法不需要进行微调，且保留了更有代表性的网络结构。 
     
