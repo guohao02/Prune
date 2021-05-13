@@ -17,3 +17,6 @@
 
 6.[Neuron-level Structured Pruning using Polarization Regularizer](https://www.researchgate.net/profile/Tao-Zhuang-4/publication/344781579_Neuron-level_Structured_Pruning_using_Polarization_Regularizer/links/5f9bf48c299bf1b53e514c0c/Neuron-level-Structured-Pruning-using-Polarization-Regularizer.pdf)  
 代码文件夹：PolarizationPruning  
+
+7.[Centripetal SGD for Pruning Very Deep Convolutional Networks with Complicated Structure](https://openaccess.thecvf.com/content_CVPR_2019/papers/Ding_Centripetal_SGD_for_Pruning_Very_Deep_Convolutional_Networks_With_Complicated_CVPR_2019_paper.pdf)  
+代码文件夹：C_sgd-Pruning
