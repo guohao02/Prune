@@ -28,10 +28,80 @@
 
 **C-SGD后的卷积核修剪**  
 &emsp;&emsp;C-SGD训练完成后，由于每一簇的卷积核变得相同，所以挑选任何一个都是一样的。为每一层从剩下的集里简单地挑选每一簇中第一个卷积核（也就是有最小索引值的卷积核），就是  
-![image](https://user-images.githubusercontent.com/80331072/118102031-d9b32100-b40a-11eb-9fff-469fb33342ae.png)
+![image](https://user-images.githubusercontent.com/80331072/118102031-d9b32100-b40a-11eb-9fff-469fb33342ae.png)  
 &emsp;&emsp;对于下一层，我们把要删除的通道加到对应剩下的通道上。  
-![image](https://user-images.githubusercontent.com/80331072/118102107-f2233b80-b40a-11eb-8919-9e0ac9ab50d3.png)
+![image](https://user-images.githubusercontent.com/80331072/118102107-f2233b80-b40a-11eb-8919-9e0ac9ab50d3.png)  
+
+## 核心代码
+采用C-SGD方法的训练函数：
+```
+def train_one_step(net, data, label, optimizer, criterion, param_name_to_merge_matrix, param_name_to_decay_matrix):
+    pred = net(data)
+    loss = criterion(pred, label)
+    loss.backward()
+
+    #TODO note: C-SGD works here，核心部分
+    for name, param in net.named_parameters():
+        name = name.replace('module.', '')
+        if name in param_name_to_merge_matrix:
+            p_dim = param.dim()
+            p_size = param.size()
+            if p_dim == 4:
+                param_mat = param.reshape(p_size[0], -1)
+                g_mat = param.grad.reshape(p_size[0], -1)
+            elif p_dim == 1:
+                param_mat = param.reshape(p_size[0], 1)
+                g_mat = param.grad.reshape(p_size[0], 1)
+            else:
+                assert p_dim == 2
+                param_mat = param
+                g_mat = param.grad
+            #C-SGD的梯度跟新
+            csgd_gradient = param_name_to_merge_matrix[name].matmul(g_mat) + param_name_to_decay_matrix[name].matmul(param_mat)
+            param.grad.copy_(csgd_gradient.reshape(p_size))
+
+    optimizer.step()
+    optimizer.zero_grad()
+
+    acc, acc5 = torch_accuracy(pred, label, (1,5))
+    return acc, acc5, loss
+```    
+卷积核聚类函数：
+```
+def get_layer_idx_to_clusters(kernel_namedvalue_list, target_deps, pacesetter_dict):#
+    result = {}
+    for layer_idx, named_kv in enumerate(kernel_namedvalue_list):
+        num_filters = named_kv.value.shape[0]
+        if pacesetter_dict is not None and _is_follower(layer_idx, pacesetter_dict):
+            continue
+        if num_filters > target_deps[layer_idx]:
+            result[layer_idx] = cluster_by_kmeans(kernel_value=named_kv.value, num_cluster=target_deps[layer_idx])#kmeans聚类，获取每个层的cluster
+        elif num_filters < target_deps[layer_idx]:
+            raise ValueError('wrong target dep')
+    return result
+```
+剪枝函数：
+```
+csgd_prune_and_save(engine=engine, layer_idx_to_clusters=layer_idx_to_clusters,
+                        save_file=pruned_weights, succeeding_strategy=succeeding_strategy, new_deps=target_deps)
+```                        
 
 
-
+## 代码运行(train on CIFAR-10)
+1.Make a soft link to your CIFAR-10 directory.If the dataset is not found in the directory, it will be automatically downloaded
+```
+ln -s YOUR_PATH_TO_CIFAR cifar10_data
+```
+2.Set the environment variables.
+```
+export PYTHONPATH=.
+```
+3.Run Centripetal SGD to train a base ResNet-56
+```
+python csgd/do_csgd.py -a src56 -i 0
+python csgd/do_csgd.py -a src56 -i 1
+python csgd/do_csgd.py -a src56 -i 2
+```
+## 代码参考
+[Centripetal-SGD](https://github.com/DingXiaoH/Centripetal-SGD0
 
