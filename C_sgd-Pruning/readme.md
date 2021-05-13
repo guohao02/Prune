@@ -103,5 +103,5 @@ python csgd/do_csgd.py -a src56 -i 1
 python csgd/do_csgd.py -a src56 -i 2
 ```
 ## 代码参考
-[Centripetal-SGD](https://github.com/DingXiaoH/Centripetal-SGD0
+[Centripetal-SGD](https://github.com/DingXiaoH/Centripetal-SGD)
 
