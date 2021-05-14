@@ -84,8 +84,61 @@ def get_layer_idx_to_clusters(kernel_namedvalue_list, target_deps, pacesetter_di
 ```
 csgd_prune_and_save(engine=engine, layer_idx_to_clusters=layer_idx_to_clusters,
                         save_file=pruned_weights, succeeding_strategy=succeeding_strategy, new_deps=target_deps)
-```                        
+```  
+获取Γ矩阵的函数：
+```
+def generate_merge_matrix_for_kernel(deps, layer_idx_to_clusters, kernel_namedvalue_list):
+    result = {}
+    for layer_idx, clusters in layer_idx_to_clusters.items():
+        num_filters = deps[layer_idx]
+        merge_trans_mat = np.zeros((num_filters, num_filters), dtype=np.float32)
+        for clst in clusters:
+            if len(clst) == 1:
+                merge_trans_mat[clst[0], clst[0]] = 1
+                continue
+            sc = sorted(clst)       # Ideally, clst should have already been sorted in ascending order
+            for ei in sc:
+                for ej in sc:
+                    merge_trans_mat[ei, ej] = 1 / len(clst)
+        result[kernel_namedvalue_list[layer_idx].name] = torch.from_numpy(merge_trans_mat).cuda()
+    return result
+```
+获取Λ矩阵的函数：
+```
+def generate_decay_matrix_for_kernel_and_vecs(deps, layer_idx_to_clusters, kernel_namedvalue_list,
+                                              weight_decay, weight_decay_bias, centri_strength):
+    result = {}
+    #   for the kernel
+    for layer_idx, clusters in layer_idx_to_clusters.items():
+        num_filters = deps[layer_idx]
+        decay_trans_mat = np.zeros((num_filters, num_filters), dtype=np.float32)
+        for clst in clusters:
+            sc = sorted(clst)
+            for ee in sc:
+                decay_trans_mat[ee, ee] = weight_decay + centri_strength
+                for p in sc:
+                    decay_trans_mat[ee, p] += -centri_strength / len(clst)
+        kernel_mat = torch.from_numpy(decay_trans_mat).cuda()
+        result[kernel_namedvalue_list[layer_idx].name] = kernel_mat
 
+    #   for the vec params (bias, beta and gamma), we use 0.1 * centripetal strength
+    for layer_idx, clusters in layer_idx_to_clusters.items():
+        num_filters = deps[layer_idx]
+        decay_trans_mat = np.zeros((num_filters, num_filters), dtype=np.float32)
+        for clst in clusters:
+            sc = sorted(clst)
+            for ee in sc:
+                # Note: using smaller centripetal strength on the scaling factor of BN improve the performance in some of the cases
+                decay_trans_mat[ee, ee] = weight_decay_bias + centri_strength * 0.1
+                for p in sc:
+                    decay_trans_mat[ee, p] += -centri_strength * 0.1 / len(clst)
+        vec_mat = torch.from_numpy(decay_trans_mat).cuda()
+        result[kernel_namedvalue_list[layer_idx].name.replace(KERNEL_KEYWORD, 'bn.weight')] = vec_mat
+        result[kernel_namedvalue_list[layer_idx].name.replace(KERNEL_KEYWORD, 'bn.bias')] = vec_mat
+        result[kernel_namedvalue_list[layer_idx].name.replace(KERNEL_KEYWORD, 'conv.bias')] = vec_mat
+
+    return result
+```    
 
 ## 代码运行(train on CIFAR-10)
 1.Make a soft link to your CIFAR-10 directory.If the dataset is not found in the directory, it will be automatically downloaded
