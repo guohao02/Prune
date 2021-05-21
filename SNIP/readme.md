@@ -1,1 +1,5 @@
+# 剪枝——结构化剪枝
+## 下面要介绍的论文为：
+[SNIP: SINGLE-SHOT NETWORK PRUNING BASED ON CONNECTION SENSITIVITY](https://arxiv.org/pdf/1810.02340.pdf)(ICLR 2019)
+
 
