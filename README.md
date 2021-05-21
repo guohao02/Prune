@@ -21,5 +21,5 @@
 7.[Centripetal SGD for Pruning Very Deep Convolutional Networks with Complicated Structure](https://openaccess.thecvf.com/content_CVPR_2019/papers/Ding_Centripetal_SGD_for_Pruning_Very_Deep_Convolutional_Networks_With_Complicated_CVPR_2019_paper.pdf)  
 代码文件夹：C_sgd-Pruning  
 
-8.[SNIP: Single-shot Network Pruning based on Connection Sensitivity (ICLR 2019)](https://arxiv.org/pdf/1810.02340.pdf)
+8.[SNIP: Single-shot Network Pruning based on Connection Sensitivity (ICLR 2019)](https://arxiv.org/pdf/1810.02340.pdf)  
 代码文件夹：SNIP
