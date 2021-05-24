@@ -178,7 +178,7 @@ def prune_resnet(args, state_dict):
     model = resnet_56_sparse(has_mask=mask_block).to(args.gpus[0])#模型修剪
 ```
 ## 代码运行：
-prepare:
+prepare:  
 下载baseline：[resnet56](https://drive.google.com/file/d/1XHNxyFklGjvzNpTjzlkjpKc61-LLjt5T/view)  
 train:  
 ```
