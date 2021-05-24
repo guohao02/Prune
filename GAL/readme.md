@@ -179,8 +179,8 @@ def prune_resnet(args, state_dict):
 ```
 ## 代码运行：
 prepare:
-下载baseline：[resnet56](https://drive.google.com/file/d/1XHNxyFklGjvzNpTjzlkjpKc61-LLjt5T/view)
-train:
+下载baseline：[resnet56](https://drive.google.com/file/d/1XHNxyFklGjvzNpTjzlkjpKc61-LLjt5T/view)  
+train:  
 ```
 python main.py
 ```
