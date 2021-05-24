@@ -24,3 +24,5 @@
 8.[SNIP: Single-shot Network Pruning based on Connection Sensitivity (ICLR 2019)](https://arxiv.org/pdf/1810.02340.pdf)  
 代码文件夹：SNIP
 
+9.[Towards Optimal Structured CNN Pruning via Generative Adversarial Learning](https://openaccess.thecvf.com/content_CVPR_2019/papers/Lin_Towards_Optimal_Structured_CNN_Pruning_via_Generative_Adversarial_Learning_CVPR_2019_paper.pdf)  
+代码文件夹：GAL
