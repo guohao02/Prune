@@ -18,11 +18,11 @@
 ![image](https://user-images.githubusercontent.com/80331072/119317911-3df79f80-bcab-11eb-91f9-7a9ac1e8e3b6.png)  
 **算法流程：**  
 ![image](https://user-images.githubusercontent.com/80331072/119318222-9dee4600-bcab-11eb-8836-975ac02a97b2.png)  
-**优化策略**主要包含两个交替执行的阶段：
+**优化策略**主要包含两个交替执行的阶段：  
 **1）第一个阶段固定G与m**，通过对抗训练更新判别器D，损失函数包含对抗损失与对抗正则项  
 **2）第二阶段固定D**，更新生成器G与Soft Mask，损失函数包含对抗损失中的fg相关项、fb与fg的MSE损失以及G、m的正则项。最终，完成Soft Mask的稀疏化之后，便可以按照门控方式，完成channel、branch或block的规整剪枝  
 **第二阶段的m的更新**：文章采用FISTA 算法，如下图所示：  
-![image](https://user-images.githubusercontent.com/80331072/119319158-abf09680-bcac-11eb-8a96-940365a5f7ee.png)  
+![image](https://user-images.githubusercontent.com/80331072/119324022-edd00b80-bcb1-11eb-8ec8-a7b3fe5c2288.png) 
 
 ## 核心代码
 优化器：
