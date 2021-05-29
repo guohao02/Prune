@@ -11,7 +11,7 @@
 卷积核剪枝的目的是为了减去不重要的卷积核，本文对卷积核的重要性进行了重新定义，卷积核的重要性与输出特征图的rank有关。  
 ![image](https://user-images.githubusercontent.com/80331072/120064032-e38c8380-c09c-11eb-828b-7c3cf05d3a16.png)  
 其中，输出特征图的rank可以经过SVD分解，得到高rank的特征和低rank的特征。因此，高阶特征图实际上比低阶特征图包含更多的信息。因此，rank排名可以作为一个可靠的衡量信息丰富度。
-![image](https://user-images.githubusercontent.com/80331072/120064073-1a629980-c09d-11eb-82a2-75ff7a534f10.png)
+![image](https://user-images.githubusercontent.com/80331072/120064073-1a629980-c09d-11eb-82a2-75ff7a534f10.png)  
 为了准确地估计秩的期望，必须使用大量的输入图像。在评估卷积核的相对重要性时，这是一个巨大的挑战。本文通过实验观察，发现特征图的平均rank与Batch数量无关，因此可以使用较小的输入，去得到平均rank，也就是公式中的g=500张图片。  
 ![image](https://user-images.githubusercontent.com/80331072/120068457-61f42000-c0b3-11eb-9630-109870c269eb.png)  
 **剪枝流程如下：**  
