@@ -14,7 +14,7 @@
 ![image](https://user-images.githubusercontent.com/80331072/120064073-1a629980-c09d-11eb-82a2-75ff7a534f10.png)
 为了准确地估计秩的期望，必须使用大量的输入图像。在评估卷积核的相对重要性时，这是一个巨大的挑战。本文通过实验观察，发现特征图的平均rank与Batch数量无关，因此可以使用较小的输入，去得到平均rank，也就是公式中的g=500张图片。  
 ![image](https://user-images.githubusercontent.com/80331072/120068457-61f42000-c0b3-11eb-9630-109870c269eb.png)  
-**剪枝流程如下：**
+**剪枝流程如下：**  
 1.使用输入计算出每个卷积核的输出特征图的平均Rank  
 ![image](https://user-images.githubusercontent.com/80331072/120068643-463d4980-c0b4-11eb-8d9c-514ded55f283.png)  
 2.对得到的平均rank进行排序  
