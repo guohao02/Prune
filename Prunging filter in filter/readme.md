@@ -1,6 +1,6 @@
 # 剪枝——Prunging filter in filter
 ## 下面要介绍的论文为：
-[Prunging filter in filter](https://arxiv.org/pdf/2009.14410.pdf)  (NeurIPS 2020)
+[Pruning filter in filter](https://arxiv.org/pdf/2009.14410.pdf)  (NeurIPS 2020)
 
 ## 方法
 ### 引入FS层  
